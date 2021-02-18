@@ -9,6 +9,7 @@ import os
 
 app = Flask(__name__)
 socketio = SocketIO(app)
+fileName = 'myfile.wav'
 
 
 @app.route('/', methods=['POST', 'GET'])
@@ -27,16 +28,28 @@ def speech(message):
     b = io.BytesIO(base64.b64decode(message))
     print('b:',type(b))
     r = sr.Recognizer()
-    if os.path.isfile('myfile.wav'):
-        os.remove('myfile.wav')
+    if os.path.isfile(fileName):
+        os.remove(fileName)
     try:
-        with open('myfile.wav', mode='bx') as f:
+        with open(fileName, mode='bx') as f:
             f.write(b.getvalue())
         f.close()
     except: 
         pass
     
-    
+    with sr.AudioFile(fileName) as source:
+        print('into the reusable')
+        data= r.record(source)
+        # text = r.recognize_google(data)
+        # print(text)
+        try:
+            text = r.recognize_google(data)
+            print(text)
+            # os.remove(fileName)
+            
+            # return render_template('result.html')
+        except Exception as e:
+            print("Exception: "+str(e))
         
 
     # emit the frame back
