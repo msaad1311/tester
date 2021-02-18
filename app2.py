@@ -3,7 +3,9 @@ from flask import Flask, render_template
 from flask_socketio import SocketIO, emit
 import io
 import speech_recognition as sr
+import base64
 from scipy.io.wavfile import read, write
+import os
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -19,14 +21,23 @@ def speech(message):
     print(type(message))
     # sbuf = io.StringIO()
     # sbuf.write(message)
-    print(message)
+    # print(message)
 
     # decode and convert into image
-    b = read(io.BytesIO(str.encode(message)))
+    b = io.BytesIO(base64.b64decode(message))
     print('b:',type(b))
     r = sr.Recognizer()
-    with open('myfile.wav', mode='bx') as f:
-        f.write(b)
+    if os.path.isfile('myfile.wav'):
+        os.remove('myfile.wav')
+    try:
+        with open('myfile.wav', mode='bx') as f:
+            f.write(b.getvalue())
+        f.close()
+    except: 
+        pass
+    
+    
+        
 
     # emit the frame back
     # emit('response_back', stringData)

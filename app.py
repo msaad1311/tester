@@ -20,9 +20,13 @@ def index():
 def image(data_image):
     sbuf = io.StringIO()
     sbuf.write(data_image)
-    print(data_image)
+    print(type(data_image))
+    # print(data_image)
+    # with open('test.txt','w') as f:
+    #     f.write(data_image)
     # decode and convert into image
     b = io.BytesIO(base64.b64decode(data_image))
+    print('type b:',type(b))
     pimg = Image.open(b)
 
     ## converting RGB to BGR, as opencv standards
