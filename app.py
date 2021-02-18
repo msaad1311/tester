@@ -20,7 +20,7 @@ def index():
 def image(data_image):
     sbuf = io.StringIO()
     sbuf.write(data_image)
-
+    print(data_image)
     # decode and convert into image
     b = io.BytesIO(base64.b64decode(data_image))
     pimg = Image.open(b)
