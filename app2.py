@@ -2,11 +2,8 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO, emit
 import io
+import speech_recognition as sr
 import base64
-from PIL import Image
-import cv2
-import numpy as np
-import imutils
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -14,32 +11,24 @@ socketio = SocketIO(app)
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
-    return render_template('index.html')
+    return render_template('index2.html')
 
-@socketio.on('image')
-def image(data_image):
+@socketio.on('speech')
+def speech(message):
+    message = message['audio']['dataURL'].replace('data:audio/wav;base64,','')
+    print(type(message))
     sbuf = io.StringIO()
-    sbuf.write(data_image)
+    sbuf.write(message)
 
     # decode and convert into image
-    b = io.BytesIO(base64.b64decode(data_image))
-    pimg = Image.open(b)
-
-    ## converting RGB to BGR, as opencv standards
-    frame = cv2.cvtColor(np.array(pimg), cv2.COLOR_RGB2GRAY)
-
-    # Process the image frame
-    frame = imutils.resize(frame, width=700)
-    frame = cv2.flip(frame, 1)
-    imgencode = cv2.imencode('.jpg', frame)[1]
-
-    # base64 encode
-    stringData = base64.b64encode(imgencode).decode('utf-8')
-    b64_src = 'data:image/jpg;base64,'
-    stringData = b64_src + stringData
+    b = io.BytesIO(base64.b64decode(message))
+    print('b:',type(b))
+    r = sr.Recognizer()
+    with open('myfile.wav', mode='bx') as f:
+        f.write(b)
 
     # emit the frame back
-    emit('response_back', stringData)
+    # emit('response_back', stringData)
 
 
 if __name__ == '__main__':
