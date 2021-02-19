@@ -40,11 +40,10 @@ def speech(message):
     with sr.AudioFile(fileName) as source:
         print('into the reusable')
         data= r.record(source)
-        # text = r.recognize_google(data)
-        # print(text)
         try:
             text = r.recognize_google(data)
             print(text)
+            emit('messageBack', text)
             # os.remove(fileName)
             
             # return render_template('result.html')
@@ -53,7 +52,7 @@ def speech(message):
         
 
     # emit the frame back
-    # emit('response_back', stringData)
+    
 
 
 if __name__ == '__main__':

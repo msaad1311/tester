@@ -123,16 +123,18 @@
                         dataURL: audioDataURL
                     }
                 };
-                // submit the audio file to the server
-                // var data = files.toDataURL(type);
-                // console.log('data',data)
-                // var type = "audio/wav"
-                // data = data.replace("data:" + type + ";base64,", "");
-                // console.log("data2",data)
                 socketio.emit('speech', files);
             });
+            
         });
+
     };
+    socket.on("messageBack", function (text) {
+        console.log('hi',text)
+        const text_id = document.getElementById("results");
+        text_id.value = text;
+        text_id.readOnly = "true";
+      });
     </script>
 
 </body>
