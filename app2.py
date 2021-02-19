@@ -1,8 +1,9 @@
 # https://stackoverflow.com/questions/58931854/how-to-stream-live-video-frames-from-client-to-flask-server-and-back-to-the-clie
-from flask import Flask, render_template
+from flask import Flask, render_template,flash
 from flask_socketio import SocketIO, emit
 import io
 import speech_recognition as sr
+from googletrans import Translator
 import base64
 from scipy.io.wavfile import read, write
 import os
@@ -43,17 +44,13 @@ def speech(message):
         try:
             text = r.recognize_google(data)
             print(text)
-            emit('messageBack', text)
-            # os.remove(fileName)
-            
-            # return render_template('result.html')
+            t = Translator()
+            translated = t.translate(text,dest='es')
+            result = [text,translated.text]
+            emit('messageBack', result)
         except Exception as e:
+            emit('errorMessage')
             print("Exception: "+str(e))
-        
-
-    # emit the frame back
     
-
-
 if __name__ == '__main__':
     socketio.run(app, host='127.0.0.1')
