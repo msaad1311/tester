@@ -7,11 +7,13 @@ from googletrans import Translator
 import base64
 from scipy.io.wavfile import read, write
 import os
+from transformers import AutoModelWithLMHead, AutoTokenizer,pipeline
 
 app = Flask(__name__)
 socketio = SocketIO(app)
 fileName = 'myfile.wav'
-
+model = AutoModelWithLMHead.from_pretrained("Helsinki-NLP/opus-mt-en-es")
+tokenizer = AutoTokenizer.from_pretrained("Helsinki-NLP/opus-mt-en-es")
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
@@ -44,9 +46,10 @@ def speech(message):
         try:
             text = r.recognize_google(data)
             print(text)
-            t = Translator()
-            translated = t.translate(text,dest='es')
-            result = [text,translated.text]
+            translation = pipeline("translation_en_to_es", model=model, tokenizer=tokenizer)
+            translated = translation(text)[0]['translation_text']
+            print(translated)
+            result = [text,translated]
             emit('messageBack', result)
         except Exception as e:
             emit('errorMessage')
