@@ -1,22 +1,15 @@
 {%extends 'base.html'%} {%block content%}
 
 <div class="app">
-  <a id="download">Download</a>
-
   <div class="audio-controls">
     <button id="start-recording">Record</button>
     <button id="stop-recording">Stop</button>
-    <audio id="audio" controls></audio>
   </div>
 
   <div id="msg">Recording...</div>
-  <canvas id="audio-canvas" width="500" height="300"></canvas>
 </div>
 
-<br>
-
-<p id="transcript" style="color: white;">this is the transcript</p>
-<p id="translate"></p>
-
+<br />
+<p id="transcript" style="color: white;">this is the transcript</p><p id="translate"></p>
 
 {%endblock%}

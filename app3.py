@@ -9,6 +9,10 @@ import base64
 from scipy.io.wavfile import read, write
 import os
 from transformers import AutoModelWithLMHead, AutoTokenizer,pipeline
+from PIL import Image
+import imutils
+import cv2
+import numpy as np
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -24,6 +28,10 @@ def index():
 def audio():
     return render_template('audio.html')
 
+@app.route('/video',methods=['GET','POST'])
+def video():
+    return render_template('video.html')
+
 @socketio.on('speech')
 def speech(message):
     message = message['audio']['dataURL'].replace('data:audio/wav;base64,','')
@@ -34,7 +42,6 @@ def speech(message):
 
     # decode and convert into image
     b = io.BytesIO(base64.b64decode(message))
-    print('b:',type(b))
     r = sr.Recognizer()
     if os.path.isfile(fileName):
         os.remove(fileName)
@@ -59,6 +66,34 @@ def speech(message):
         except Exception as e:
             emit('errorMessage')
             print("Exception: "+str(e))
+
+@socketio.on('image')
+def image(data_image):
+    print('hinto the image function')
+    sbuf = io.StringIO()
+    sbuf.write(data_image)
+    # print(data_image)
+    # with open('test.txt','w') as f:
+    #     f.write(data_image)
+    # decode and convert into image
+    b = io.BytesIO(base64.b64decode(data_image))
+    pimg = Image.open(b)
+
+    ## converting RGB to BGR, as opencv standards
+    frame = cv2.cvtColor(np.array(pimg), cv2.COLOR_RGB2GRAY)
+
+    # Process the image frame
+    frame = imutils.resize(frame, width=700)
+    frame = cv2.flip(frame, 1)
+    imgencode = cv2.imencode('.jpg', frame)[1]
+
+    # base64 encode
+    stringData = base64.b64encode(imgencode).decode('utf-8')
+    b64_src = 'data:image/jpg;base64,'
+    stringData = b64_src + stringData
+
+    # emit the frame back
+    emit('response_back', stringData)
 
     
 if __name__ == '__main__':
