@@ -1,4 +1,5 @@
 # https://stackoverflow.com/questions/58931854/how-to-stream-live-video-frames-from-client-to-flask-server-and-back-to-the-clie
+# https://towardsdatascience.com/machine-translation-with-transformers-using-pytorch-f121fe0ad97b
 from flask import Flask, render_template,flash
 from flask_socketio import SocketIO, emit
 import io
