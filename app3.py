@@ -20,9 +20,13 @@ fileName = 'myfile.wav'
 model = AutoModelWithLMHead.from_pretrained("Helsinki-NLP/opus-mt-en-es")
 tokenizer = AutoTokenizer.from_pretrained("Helsinki-NLP/opus-mt-en-es")
 
-@app.route('/', methods=['POST', 'GET'])
+@app.route('/')
 def index():
     return render_template('home.html')
+
+@app.route('/home', methods=['POST', 'GET'])
+def home():
+    index()
 
 @app.route('/audio',methods=['GET','POST'])
 def audio():
