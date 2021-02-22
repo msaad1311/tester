@@ -1,6 +1,4 @@
 const socketio = io();
-let canvas = document.querySelector('canvas');
-let canvasCtx = canvas.getContext("2d");
 let analyser = null;
 const socket = socketio.on("connect", function () {
   // reset the recorder
@@ -13,8 +11,10 @@ let recordAudio;
 
 // on start button handler
 startRecording.onclick = function () {
+  console.log('started recording')
   // recording started
   startRecording.disabled = true;
+  document.querySelector('#msg').style.visibility = 'visible'
 
   // make use of HTML 5/WebRTC, JavaScript getUserMedia()
   // to capture the browser microphone stream
@@ -23,6 +23,7 @@ startRecording.onclick = function () {
       audio: true,
     },
     function (stream) {
+
       recordAudio = RecordRTC(stream, {
         type: "audio",
         mimeType: "audio/webm",
@@ -51,7 +52,6 @@ startRecording.onclick = function () {
 
       recordAudio.startRecording();
       stopRecording.disabled = false;
-      visualize();
     },
     function (error) {
       console.error(JSON.stringify(error));
@@ -64,6 +64,7 @@ stopRecording.onclick = function () {
   // recording stopped
   startRecording.disabled = false;
   stopRecording.disabled = true;
+  document.querySelector('#msg').style.visibility = 'hidden'
 
   // stop audio recorder
   recordAudio.stopRecording(function () {
@@ -84,48 +85,13 @@ socket.on("messageBack", function (text) {
   const transcriptID = document.getElementById("transcript");
   const translateID = document.getElementById("translate");
 
-  transcriptID.value = text[0];
-  transcriptID.readOnly = "true";
+  transcriptID.innerHTML = text[0];
+  // transcriptID.readOnly = "true";
 
-  translateID.value = text[1];
-  translateID.readOnly = "true";
+  translateID.innerHTML = text[1];
+  // translateID.readOnly = "true";
 });
 socket.on("errorMessage", () => {
   alert("Sorry retry");
 });
 
-function visualize() {
-  WIDTH = canvas.width;
-  HEIGHT = canvas.height;
-  CENTERX = canvas.width / 2;
-  CENTERY = canvas.height / 2;
-
-  recordAudio.fftSize = 32;
-  let bufferLength = recordAudio.frequencyBinCount;
-  console.log(bufferLength);
-  let dataArray = new Uint8Array(bufferLength);
-
-  canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
-
-  let draw = () => {
-    drawVisual = requestAnimationFrame(draw);
-
-    recordAudio.getByteFrequencyData(dataArray);
-    canvasCtx.fillStyle = "rgb(0, 0, 0)";
-    canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
-
-    // let radius = dataArray.reduce((a,b) => a + b) / bufferLength;
-    let radius = dataArray[2] / 2;
-    if (radius < 20) radius = 20;
-    if (radius > 100) radius = 100;
-    // console.log('Radius ', radius)
-    canvasCtx.beginPath();
-    canvasCtx.arc(CENTERX, CENTERY, radius, 0, 2 * Math.PI, false);
-    // canvasCtx.fillStyle = 'rgb(50,50,' + (radius+100) +')';
-    // canvasCtx.fill();
-    canvasCtx.lineWidth = 6;
-    canvasCtx.strokeStyle = "rgb(50,50," + (radius + 100) + ")";
-    canvasCtx.stroke();
-  };
-  draw();
-}
