@@ -69,7 +69,7 @@ def speech(message):
 
 @socketio.on('image')
 def image(data_image):
-    print('hinto the image function')
+    # print('hinto the image function')
     sbuf = io.StringIO()
     sbuf.write(data_image)
     # print(data_image)

@@ -1,40 +1,59 @@
-{%extends 'base.html'%}
-
-{%block content%}
+{%extends 'base.html'%} {%block content%}
 
 <div id="container">
-    <canvas id="canvasOutput"></canvas>
-    <video autoplay="true" id="videoElement"></video>
-  </div>
+  <canvas id="canvasOutput"></canvas>
+  <video autoplay="true" id="videoElement"></video>
+</div>
 
-  <div class="video">
-    <img id="image" />
-  </div>
+<div class="video">
+  <img id="image" />
 </div>
 
 <div class="row">
-    <div class="col-md-2">
-        <img src="../static/images/lake.jpg" alt="Lake" class="backgrounds" id="lake">
-    </div>
-    
-    <div class="col-md-2">
-        <img src="../static/images/office.jpg" alt="Office" class="backgrounds" id="office">
-    </div>
-    
-    <div class="col-md-2">
-        <img src="../static/images/japanese.jpg" alt="Japanese"   class="backgrounds" id="japanese">
-    </div>
-    
-    <div class="col-md-2">
-        <img src="../static/images/niagara-falls.jpg" alt="Niagra Falls"  class="backgrounds" id="niagaraFalls">
-    </div>
-    
-    <div class="col-md-2">
-        <img src="../static/images/taj.jpg" alt="Taj Mahal" class="backgrounds" id="tajMahal">
-    </div>
-  
+  <div class="col-md-2">
+    <img
+      src="static/images/lake.jpg"
+      alt="Lake"
+      class="backgrounds"
+      id="lake"
+    />
+  </div>
+
+  <div class="col-md-2">
+    <img
+      src="static/images/office.jpg"
+      alt="Office"
+      class="backgrounds"
+      id="office"
+    />
+  </div>
+
+  <div class="col-md-2">
+    <img
+      src="static/images/japanese.jpg"
+      alt="Japanese"
+      class="backgrounds"
+      id="japanese"
+    />
+  </div>
+
+  <div class="col-md-2">
+    <img
+      src="static/images/niagara-falls.jpg"
+      alt="Niagra Falls"
+      class="backgrounds"
+      id="niagaraFalls"
+    />
+  </div>
+
+  <div class="col-md-2">
+    <img
+      src="static/images/taj.jpg"
+      alt="Taj Mahal"
+      class="backgrounds"
+      id="tajMahal"
+    />
+  </div>
 </div>
-
-
 
 {%endblock%}
