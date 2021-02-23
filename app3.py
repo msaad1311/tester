@@ -13,12 +13,16 @@ from PIL import Image
 import imutils
 import cv2
 import numpy as np
+import backgroundModules
+import logging
 
 app = Flask(__name__)
 socketio = SocketIO(app)
 fileName = 'myfile.wav'
 model = AutoModelWithLMHead.from_pretrained("Helsinki-NLP/opus-mt-en-es")
 tokenizer = AutoTokenizer.from_pretrained("Helsinki-NLP/opus-mt-en-es")
+log = logging.getLogger('werkzeug')
+log.disabled = True
 
 @app.route('/')
 def index():
@@ -40,9 +44,6 @@ def video():
 def speech(message):
     message = message['audio']['dataURL'].replace('data:audio/wav;base64,','')
     print(type(message))
-    # sbuf = io.StringIO()
-    # sbuf.write(message)
-    # print(message)
 
     # decode and convert into image
     b = io.BytesIO(base64.b64decode(message))
@@ -72,11 +73,16 @@ def speech(message):
             print("Exception: "+str(e))
 
 @socketio.on('image')
-def image(data_image):
+def image(data):
+    print(data)
+    data_image = data['image_data']
+    background = data['background']
     sbuf = io.StringIO()
     sbuf.write(data_image)
     b = io.BytesIO(base64.b64decode(data_image))
     pimg = Image.open(b)
+    print(background)
+    # print(type(background))
 
     ## converting RGB to BGR, as opencv standards
     frame = cv2.cvtColor(np.array(pimg), cv2.COLOR_RGB2GRAY)

@@ -13,6 +13,7 @@ const socket = socketio.on("connect", function () {
 const video = document.querySelector("#videoElement");
 let backImages = document.getElementsByClassName("backgrounds");
 const FPS = 22;
+let bgs;
 video.width = 500;
 video.height = 375;
 
@@ -43,28 +44,29 @@ function capture(video, scaleFactor) {
   return canvas;
 }
 
-setInterval(() => {
-  var type = "image/png";
-  var video_element = document.getElementById("videoElement");
-  var frame = capture(video_element, 1);
-  var data = frame.toDataURL(type);
-  data = data.replace("data:" + type + ";base64,", ""); //split off junk at the beginning
-  socket.emit("image", data);
-}, 1000 / FPS);
+function starter() {
+  setInterval(() => {
+    var type = "image/png";
+    var video_element = document.getElementById("videoElement");
+    var frame = capture(video_element, 1);
+    var data = frame.toDataURL(type);
+    data = data.replace("data:" + type + ";base64,", ""); //split off junk at the beginning
+    for (backgroundImages of backImages) {
+      backgroundImages.addEventListener("click", function () {
+        bgs = document.getElementById(this.id);
+        console.log(bgs)
+        bgs.style.opacity = "1";
+      });
+    }
+    socket.emit("image", {image_data:bgs,background:bgs});
+  }, 1000 / FPS);
 
-socket.on("response_back", function (image) {
-  const image_id = document.getElementById("image");
-  image_id.src = image;
-});
-
-
-for (backgroundImages of backImages) {
-  backgroundImages.addEventListener("click", function () {
-    bgs = document.getElementById(this.id);
-    bgs.style.opacity = "1";
-    frameMerger(backgroundDarkeningMask, blurEffect, grayEffect);
-  });
+  // socket.on("response_back", function (image) {
+  //   const image_id = document.getElementById("image");
+  //   image_id.src = image;
+  // });
 }
+starter();
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////// AUDIO PORTION //////////////////////////////////////////////////////////////////
