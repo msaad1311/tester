@@ -1,14 +1,18 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////// CONSTANT  ///////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
 const socketio = io();
-let analyser = null;
-const startRecording = document.getElementById("start-recording");
-const stopRecording = document.getElementById("stop-recording");
-let recordAudio;
-const video = document.querySelector("#videoElement");
 const socket = socketio.on("connect", function () {
   console.log("Connected...!", socket.connected);
 });
 
-// Video portion
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////// VIDEO PORTION ///////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+const video = document.querySelector("#videoElement");
+let backImages = document.getElementsByClassName("backgrounds");
+const FPS = 22;
 video.width = 500;
 video.height = 375;
 
@@ -25,11 +29,6 @@ if (navigator.mediaDevices.getUserMedia) {
     });
 }
 
-// let src = new cv.Mat(video.height, video.width, cv.CV_8UC4);
-// let dst = new cv.Mat(video.height, video.width, cv.CV_8UC1);
-// let cap = new cv.VideoCapture(video);
-
-const FPS = 22;
 function capture(video, scaleFactor) {
   if (scaleFactor == null) {
     scaleFactor = 1;
@@ -45,23 +44,35 @@ function capture(video, scaleFactor) {
 }
 
 setInterval(() => {
-  // cap.read(src);
-
   var type = "image/png";
-  // var data = document.getElementById("canvasOutput").toDataURL(type);
   var video_element = document.getElementById("videoElement");
   var frame = capture(video_element, 1);
   var data = frame.toDataURL(type);
   data = data.replace("data:" + type + ";base64,", ""); //split off junk at the beginning
-  // console.log('hi',data)
   socket.emit("image", data);
-}, 10000 / FPS);
+}, 1000 / FPS);
 
 socket.on("response_back", function (image) {
   const image_id = document.getElementById("image");
   image_id.src = image;
 });
 
+
+for (backgroundImages of backImages) {
+  backgroundImages.addEventListener("click", function () {
+    bgs = document.getElementById(this.id);
+    bgs.style.opacity = "1";
+    frameMerger(backgroundDarkeningMask, blurEffect, grayEffect);
+  });
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////// AUDIO PORTION //////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+const startRecording = document.getElementById("start-recording");
+const stopRecording = document.getElementById("stop-recording");
+let recordAudio;
 
 // on start button handler
 startRecording.onclick = function () {
@@ -147,4 +158,3 @@ socket.on("messageBack", function (text) {
 socket.on("errorMessage", () => {
   alert("Sorry retry");
 });
-

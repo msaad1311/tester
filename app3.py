@@ -73,13 +73,8 @@ def speech(message):
 
 @socketio.on('image')
 def image(data_image):
-    # print('hinto the image function')
     sbuf = io.StringIO()
     sbuf.write(data_image)
-    # print(data_image)
-    # with open('test.txt','w') as f:
-    #     f.write(data_image)
-    # decode and convert into image
     b = io.BytesIO(base64.b64decode(data_image))
     pimg = Image.open(b)
 
