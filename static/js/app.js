@@ -7,66 +7,67 @@ const socket = socketio.on("connect", function () {
   console.log("Connected...!", socket.connected);
 });
 
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////// VIDEO PORTION ///////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-const video = document.querySelector("#videoElement");
-let backImages = document.getElementsByClassName("backgrounds");
-const FPS = 22;
-let bgs;
-video.width = 500;
-video.height = 375;
+// const video = document.querySelector("#videoElement");
+// let backImages = document.getElementsByClassName("backgrounds");
+// const FPS = 22;
+// let bgs;
+// video.width = 500;
+// video.height = 375;
 
-if (navigator.mediaDevices.getUserMedia) {
-  navigator.mediaDevices
-    .getUserMedia({ video: true })
-    .then(function (stream) {
-      video.srcObject = stream;
-      video.play();
-    })
-    .catch(function (err0r) {
-      console.log(err0r);
-      console.log("Something went wrong!");
-    });
-}
+// if (navigator.mediaDevices.getUserMedia) {
+//   navigator.mediaDevices
+//     .getUserMedia({ video: true })
+//     .then(function (stream) {
+//       video.srcObject = stream;
+//       video.play();
+//     })
+//     .catch(function (err0r) {
+//       console.log(err0r);
+//       console.log("Something went wrong!");
+//     });
+// }
 
-function capture(video, scaleFactor) {
-  if (scaleFactor == null) {
-    scaleFactor = 1;
-  }
-  var w = video.videoWidth * scaleFactor;
-  var h = video.videoHeight * scaleFactor;
-  var canvas = document.createElement("canvas");
-  canvas.width = w;
-  canvas.height = h;
-  var ctx = canvas.getContext("2d");
-  ctx.drawImage(video, 0, 0, w, h);
-  return canvas;
-}
+// function capture(video, scaleFactor) {
+//   if (scaleFactor == null) {
+//     scaleFactor = 1;
+//   }
+//   var w = video.videoWidth * scaleFactor;
+//   var h = video.videoHeight * scaleFactor;
+//   var canvas = document.createElement("canvas");
+//   canvas.width = w;
+//   canvas.height = h;
+//   var ctx = canvas.getContext("2d");
+//   ctx.drawImage(video, 0, 0, w, h);
+//   return canvas;
+// }
 
-function starter() {
-  setInterval(() => {
-    var type = "image/png";
-    var video_element = document.getElementById("videoElement");
-    var frame = capture(video_element, 1);
-    var data = frame.toDataURL(type);
-    data = data.replace("data:" + type + ";base64,", ""); //split off junk at the beginning
-    for (backgroundImages of backImages) {
-      backgroundImages.addEventListener("click", function () {
-        bgs = document.getElementById(this.id);
-        console.log(bgs)
-        bgs.style.opacity = "1";
-      });
-    }
-    socket.emit("image", {image_data:bgs,background:bgs});
-  }, 1000 / FPS);
+// function starter() {
+//   setInterval(() => {
+//     var type = "image/png";
+//     var video_element = document.getElementById("videoElement");
+//     var frame = capture(video_element, 1);
+//     var data = frame.toDataURL(type);
+//     data = data.replace("data:" + type + ";base64,", ""); //split off junk at the beginning
+//     for (backgroundImages of backImages) {
+//       backgroundImages.addEventListener("click", function () {
+//         bgs = document.getElementById(this.id);
+//         console.log(bgs)
+//         bgs.style.opacity = "1";
+//       });
+//     }
+//     socket.emit("image", {image_data:bgs,background:bgs});
+//   }, 1000 / FPS);
 
-  // socket.on("response_back", function (image) {
-  //   const image_id = document.getElementById("image");
-  //   image_id.src = image;
-  // });
-}
-starter();
+//   // socket.on("response_back", function (image) {
+//   //   const image_id = document.getElementById("image");
+//   //   image_id.src = image;
+//   // });
+// }
+// starter();
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////// AUDIO PORTION //////////////////////////////////////////////////////////////////
@@ -75,6 +76,9 @@ starter();
 const startRecording = document.getElementById("start-recording");
 const stopRecording = document.getElementById("stop-recording");
 let recordAudio;
+console.log('into audio html')
+
+startRecording.disabled = false;
 
 // on start button handler
 startRecording.onclick = function () {
