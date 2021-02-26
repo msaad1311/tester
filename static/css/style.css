@@ -1638,6 +1638,17 @@ main {
   padding-top: 48px;
   padding-bottom: 48px;
 }
+
+.row-update {
+  display: flex;
+  flex-direction: row;
+  margin: 0 auto;
+}
+.row-update > div > img {
+  width: 200px;
+}
+
+
 @media (min-width: 641px) {
   .section-inner {
     padding-top: 88px;
