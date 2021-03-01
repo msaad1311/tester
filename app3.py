@@ -76,6 +76,7 @@ def speech(message):
 def image(data_image):
     image = data_image['data']
     backe = data_image['bg']
+    carto = data_image['cartoon']
     sbuf = io.StringIO()
     sbuf.write(image)
     # # # decode and convert into image
@@ -84,7 +85,7 @@ def image(data_image):
 
     # # ## converting RGB to BGR, as opencv standards
     frame = np.array(pimg)
-    frame = backgroundModules.cartoonizer(frame,backe)
+    frame = backgroundModules.cartoonizer(frame,backe,carto)
     imgencode = cv2.imencode('.jpg', frame)[1]
 
     # # base64 encode

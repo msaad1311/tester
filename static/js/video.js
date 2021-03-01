@@ -10,7 +10,8 @@ socket.on("connect", function () {
 const video = document.querySelector("#videoElement");
 backImages = document.getElementsByClassName("backgrounds");
 let bgs = null;
-
+let cartoonize = document.getElementById("cartoonize");
+let cartoon = false;
 video.width = 500;
 video.height = 375;
 
@@ -55,9 +56,9 @@ setInterval(() => {
   var data = frame.toDataURL(type);
   data = data.replace("data:" + type + ";base64,", ""); //split off junk at the beginning
   if (bgs == null) {
-    socket.emit("image", { data: data, bg: bgs });
+    socket.emit("image", { data: data, bg: bgs,cartoon:cartoon });
   } else {
-    socket.emit("image", { data: data, bg: bgs.id });
+    socket.emit("image", { data: data, bg: bgs.id,cartoon:cartoon });
   }
 }, 10000 / FPS);
 
@@ -73,3 +74,11 @@ for (backgroundImages of backImages) {
     bgs.style.opacity = "1";
   });
 }
+
+cartoonize.addEventListener("change", function () {
+  if (cartoonize.checked) {
+    cartoon = true;
+  } else {
+    cartoon = false;
+  }
+});

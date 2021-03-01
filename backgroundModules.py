@@ -8,7 +8,7 @@ from Models.cartoon_models.generator import Generator
 from Models.segment_models.models.modnet import MODNet
 import numpy as np
 
-def cartoonizer(frame,bg):
+def cartoonizer(frame,bg,cr):
     
     checkpoint_seg = r'Checkpoints\Segmentation.ckpt'
     checkpoint_car = r'Checkpoints\Cartoonization.pth'
@@ -47,7 +47,7 @@ def cartoonizer(frame,bg):
     matte_tensor = matte_tensor.repeat(1, 3, 1, 1)
     matte_np = matte_tensor[0].data.cpu().numpy().transpose(1, 2, 0)
     
-    cr = 'No'
+    cr = str(cr)
     
     background = bgSelector(str(bg).lower())
     if background is None:
@@ -59,7 +59,7 @@ def cartoonizer(frame,bg):
     
     fg_np = fg_np.astype(np.uint8)
     
-    if cr=='Yes':
+    if cr=='True':
         fg_np = cv2.cvtColor(fg_np,cv2.COLOR_BGR2RGB)
         fg_np1 = preprocess(fg_np).unsqueeze(0).to(device).to(torch.float32)
         car_generator.eval()
