@@ -46,23 +46,19 @@ function capture(video, scaleFactor) {
   return canvas;
 }
 
-setInterval(()=>{
+setInterval(() => {
   // cap.read(src);
-
   var type = "image/png";
   // var data = document.getElementById("canvasOutput").toDataURL(type);
   var video_element = document.getElementById("videoElement");
   var frame = capture(video_element, 1);
   var data = frame.toDataURL(type);
   data = data.replace("data:" + type + ";base64,", ""); //split off junk at the beginning
-  for (backgroundImages of backImages) {
-    backgroundImages.addEventListener("click", function (e) {
-      console.log(e.target.id);
-      bgs = document.getElementById(e.target.id);
-      bgs.style.opacity = "1";
-    });
+  if (bgs == null) {
+    socket.emit("image", { data: data, bg: bgs });
+  } else {
+    socket.emit("image", { data: data, bg: bgs.id });
   }
-  socket.emit("image", {data:bgs,bg:bgs});
 }, 10000 / FPS);
 
 socket.on("response_back", function (image) {
@@ -70,4 +66,10 @@ socket.on("response_back", function (image) {
   image_id.src = image;
 });
 
-
+for (backgroundImages of backImages) {
+  backgroundImages.addEventListener("click", function (e) {
+    console.log(e.target.id);
+    bgs = document.getElementById(e.target.id);
+    bgs.style.opacity = "1";
+  });
+}

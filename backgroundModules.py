@@ -8,7 +8,7 @@ from Models.cartoon_models.generator import Generator
 from Models.segment_models.models.modnet import MODNet
 import numpy as np
 
-def cartoonizer(frame):
+def cartoonizer(frame,bg):
     
     checkpoint_seg = r'Checkpoints\Segmentation.ckpt'
     checkpoint_car = r'Checkpoints\Cartoonization.pth'
@@ -47,10 +47,9 @@ def cartoonizer(frame):
     matte_tensor = matte_tensor.repeat(1, 3, 1, 1)
     matte_np = matte_tensor[0].data.cpu().numpy().transpose(1, 2, 0)
     
-    bg = 'Office'
     cr = 'No'
     
-    background = bgSelector(bg.lower())
+    background = bgSelector(str(bg).lower())
     if background is None:
         fg_np = np.array(matte_np * frame_np + (1 - matte_np) * np.full(frame_np.shape, frame_np))
     else:
@@ -84,15 +83,14 @@ def cartoonizer(frame):
             
 def bgSelector(idx):
     if idx == 'lake':
-        print('hey there')
-        return cv2.imread(r'static\images\lake.jpg')
+        return cv2.cvtColor(cv2.imread(r'static\images\lake.jpg'),cv2.COLOR_BGR2RGB)
     elif idx == 'office':
-        return cv2.imread(r'static\images\office.jpg')
+        return cv2.cvtColor(cv2.imread(r'static\images\office.jpg'),cv2.COLOR_BGR2RGB)
     elif idx == 'japanese':
-        return cv2.imread(r'static\images\japanese.jpg')
+        return cv2.cvtColor(cv2.imread(r'static\images\japanese.jpg'),cv2.COLOR_BGR2RGB)
     elif idx == 'niagara':
-        return cv2.imread(r'static\images\niagara-falls.jpg')
+        return cv2.cvtColor(cv2.imread(r'static\images\niagara-falls.jpg'),cv2.COLOR_BGR2RGB)
     elif idx == 'taj':
-        return cv2.imread(r'static\images\taj.jpg')
+        return cv2.cvtColor(cv2.imread(r'static\images\taj.jpg'),cv2.COLOR_BGR2RGB)
     else:
         return None
