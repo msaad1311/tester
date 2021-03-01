@@ -74,24 +74,29 @@ def speech(message):
 
 @socketio.on('image')
 def image(data_image):
-    sbuf = io.StringIO()
-    sbuf.write(data_image)
-    # decode and convert into image
-    b = io.BytesIO(base64.b64decode(data_image))
-    pimg = Image.open(b)
+    image = data_image['data']
+    backe = data_image['bg']
+    print(data_image)
+    print(backe)
+    # sbuf = io.StringIO()
+    # sbuf.write(image)
+    # sbuf.write(backe)
+    # # # decode and convert into image
+    # b = io.BytesIO(base64.b64decode(image))
+    # pimg = Image.open(b)
 
-    ## converting RGB to BGR, as opencv standards
-    frame = np.array(pimg)
-    frame = backgroundModules.cartoonizer(frame)
-    imgencode = cv2.imencode('.jpg', frame)[1]
+    # # ## converting RGB to BGR, as opencv standards
+    # frame = np.array(pimg)
+    # frame = backgroundModules.cartoonizer(frame)
+    # imgencode = cv2.imencode('.jpg', frame)[1]
 
-    # base64 encode
-    stringData = base64.b64encode(imgencode).decode('utf-8')
-    b64_src = 'data:image/jpg;base64,'
-    stringData = b64_src + stringData
+    # # base64 encode
+    # stringData = base64.b64encode(imgencode).decode('utf-8')
+    # b64_src = 'data:image/jpg;base64,'
+    # stringData = b64_src + stringData
 
-    # emit the frame back
-    emit('response_back', stringData)
+    # # emit the frame back
+    # emit('response_back', stringData)
 
     
 if __name__ == '__main__':

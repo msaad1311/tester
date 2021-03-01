@@ -8,6 +8,8 @@ socket.on("connect", function () {
 });
 
 const video = document.querySelector("#videoElement");
+backImages = document.getElementsByClassName("backgrounds");
+let bgs = null;
 
 video.width = 500;
 video.height = 375;
@@ -44,7 +46,7 @@ function capture(video, scaleFactor) {
   return canvas;
 }
 
-setInterval(() => {
+setInterval(()=>{
   // cap.read(src);
 
   var type = "image/png";
@@ -53,10 +55,19 @@ setInterval(() => {
   var frame = capture(video_element, 1);
   var data = frame.toDataURL(type);
   data = data.replace("data:" + type + ";base64,", ""); //split off junk at the beginning
-  socket.emit("image", data);
+  for (backgroundImages of backImages) {
+    backgroundImages.addEventListener("click", function (e) {
+      console.log(e.target.id);
+      bgs = document.getElementById(e.target.id);
+      bgs.style.opacity = "1";
+    });
+  }
+  socket.emit("image", {data:bgs,bg:bgs});
 }, 10000 / FPS);
 
-  socket.on("response_back", function (image) {
-    const image_id = document.getElementById("image");
-    image_id.src = image;
-  });
+socket.on("response_back", function (image) {
+  const image_id = document.getElementById("image");
+  image_id.src = image;
+});
+
+
