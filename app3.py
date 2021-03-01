@@ -73,23 +73,16 @@ def speech(message):
             print("Exception: "+str(e))
 
 @socketio.on('image')
-def image(data):
-    print(data)
-    data_image = data['image_data']
-    background = data['background']
+def image(data_image):
     sbuf = io.StringIO()
     sbuf.write(data_image)
+    # decode and convert into image
     b = io.BytesIO(base64.b64decode(data_image))
     pimg = Image.open(b)
-    print(background)
-    # print(type(background))
 
     ## converting RGB to BGR, as opencv standards
-    frame = cv2.cvtColor(np.array(pimg), cv2.COLOR_RGB2GRAY)
-
-    # Process the image frame
-    frame = imutils.resize(frame, width=700)
-    frame = cv2.flip(frame, 1)
+    frame = np.array(pimg)
+    frame = backgroundModules.cartoonizer(frame)
     imgencode = cv2.imencode('.jpg', frame)[1]
 
     # base64 encode
